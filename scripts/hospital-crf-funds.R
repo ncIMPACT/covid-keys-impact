@@ -1,9 +1,14 @@
 library(tidyverse)
+library(tidycensus)
 library(tigris)
 library(sf)
 library(extrafont)
 library(here)
 library(ggtext)
+library(janitor)
+library(patchwork)
+library(classInt)
+library(glue)
 
 source(here("api_key/census_api_key.R"))
 
@@ -21,43 +26,69 @@ map_theme <- theme(text = element_text(family = "Arial"),
                    legend.justification = "left",
                    plot.caption = element_markdown(size = 11, hjust = 0))
 
-blue_pal <- c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635")
+logo <- png::readPNG(here("logo/black-logo-long.png"), native = TRUE)
+
+blue_pal <- c("#CFE8F3", "#73BFE2","#1696D2","#0A4C6A","#000000")
 
 nc_counties <- counties(state = 37)
+
+nc_pop <- get_acs(geography = "county", variables = "B01003_001",
+                  state = 37, key = api_key) %>%
+  clean_names()
 
 nc_hospitals <- read_csv(here("data/nc_crf_hospital_allocations.csv")) %>%
   st_as_sf(coords = c("LONGITUDE", "LATITUDE"), crs = st_crs(nc_counties))
 
 overlay <- nc_counties %>%
-  st_join(nc_hospitals)
+  st_join(nc_hospitals) %>%
+  clean_names() %>%
+  group_by(name, namelsad, geoid) %>%
+  summarise(amount = sum(amount, na.rm = T)) %>%
+  left_join(select(nc_pop, geoid, estimate)) %>%
+  mutate(per_capita = amount / estimate) %>%
+  ungroup()
+  
+natural_breaks <- classIntervals(filter(overlay, !(is.na(per_capita)))$per_capita, 5, style = "jenks")  
+  
+final <- overlay %>%
+  mutate(natural_breaks = cut(per_capita, breaks = c(0, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
+  mutate(upper = str_extract(natural_breaks, "[^(]*(?=,)")) %>%
+  mutate(lower = str_extract(natural_breaks, "(?<=,)[^\\]]*")) %>%
+  mutate(label = glue("${upper} - ${lower}"))
 
-overlay %>%
-  group_by(NAME) %>%
-  summarise(amount = sum(amount)) %>%
-  ungroup() %>%
+final %>%
+  filter(!(is.na(natural_breaks))) %>%
+  as_tibble() %>%
+  distinct(natural_breaks, .keep_all = T) %>%
+  select(natural_breaks, label) %>%
+  arrange(natural_breaks) %>%
+  pull(label) -> legend_labels
+  
+p1 <- final %>%
   ggplot() +
-  geom_sf(aes(fill = amount), color = "white") +
-  labs(title = "North Carolina Coronavirus Relief Fund\nHospital Distributions",
+  geom_sf(data = nc_counties, color = "white", fill = "#F4E8DD") +
+  geom_sf(aes(fill = natural_breaks), color = "white") +
+  scale_fill_manual(values = blue_pal, labels = legend_labels,
+                    guide = guide_legend(title = NULL, nrow = 1)) +
+  labs(title = "North Carolina Coronavirus Relief Fund\nHospital Distributions Per Capita",
        subtitle = "State distributions of relief funds as assigned to containing county",
        caption = "<b>Source:</b> NC Pandemic Recovery Office") +
-  scale_fill_gradientn(name = NULL, labels = scales::dollar_format(), na.value = "#F4E8DD",
-                       guide = guide_colorbar(barwidth = unit(4, "inches")),
-                       colors = blue_pal) +
   map_theme
 
+p1 + inset_element(logo, left = 0.7, bottom = 0, right = 1, top = 0.09, align_to = 'full')
 
-nc_hospitals %>%
-  ggplot() +
-  geom_sf(data = nc_counties, color = "#F8F8F8", fill = "#F4E8DD") +
-  geom_sf(aes(color = amount, fill = amount, size = amount), shape = 21, alpha = 0.6) +
-  labs(title = "North Carolina Coronavirus Relief Fund\nHospital Distributions",
-       subtitle = "State distributions of relief funds to hospitals",
-       caption = "<b>Source:</b> NC Pandemic Recovery Office") +
-  scale_color_gradientn(name = NULL, labels = scales::dollar_format(), na.value = "#F4E8DD",
-                        guide = guide_colorbar(barwidth = unit(4, "inches")),
-                        colors = blue_pal) +
-  scale_fill_gradientn(guide = NULL, colors = blue_pal) +
-  scale_size(guide = NULL, range = c(0, 10)) +
-  map_theme
+ggsave(filename = "hospitals-crf.png", device = "png",
+       path = here("plots/"), dpi = "retina", width = 16, height = 9)
 
+final_dat <- final %>%
+  filter(!(is.na(natural_breaks))) %>%
+  as_tibble() %>%
+  filter(per_capita > median(final$per_capita, na.rm = T)) %>%
+  select(geoid) %>%
+  mutate(hospital_crf_score = 1) %>%
+  right_join(final) %>%
+  as_tibble() %>%
+  select(name, namelsad, geoid, hospital_crf_score) %>%
+  mutate(hospital_crf_score = if_else(is.na(hospital_crf_score), 0, 1))
 
+write_csv(final_dat, here("composite/hospital_crf.csv"))

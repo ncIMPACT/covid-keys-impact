@@ -8,6 +8,7 @@ library(ggtext)
 library(janitor)
 library(patchwork)
 library(classInt)
+library(glue)
 
 source(here("api_key/census_api_key.R"))
 
@@ -32,8 +33,7 @@ blue_pal <- c("#CFE8F3", "#73BFE2","#1696D2","#0A4C6A","#000000")
 nc_counties <- counties(state = 37)
 
 nc_pop <- get_acs(geography = "county", variables = "B01003_001",
-                  state = 37,
-                  key = api_key)
+                  state = 37, key = api_key)
 
 crf_dat <- read_csv(here("data/nc-crf-county-allocations.csv"))
 
@@ -46,11 +46,23 @@ merged <- crf_dat %>%
 
 natural_breaks <- classIntervals(filter(merged, !(is.na(per_capita)))$per_capita, 5, style = "jenks")
 
-p1 <- merged %>%
+merged <- merged %>%
   mutate(natural_breaks = cut(per_capita, breaks = c(natural_breaks$brks[1]-.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
+  mutate(upper = str_extract(natural_breaks, "[^(]*(?=,)")) %>%
+  mutate(lower = str_extract(natural_breaks, "(?<=,)[^\\]]*")) %>%
+  mutate(label = glue("${upper} - ${lower}"))
+
+merged %>%
+  as_tibble() %>%
+  distinct(natural_breaks, .keep_all = T) %>%
+  select(natural_breaks, label) %>%
+  arrange(natural_breaks) %>%
+  pull(label) -> legend_labels
+
+p1 <- merged %>%
   ggplot() +
   geom_sf(aes(fill = natural_breaks), color = "white") +
-  scale_fill_manual(values = blue_pal, labels = c("$36.8 - $43", "$43 - $50.6", "$50.6 - $64.4", "$64.4 - $95.5", "$95.5 - $185"),
+  scale_fill_manual(values = blue_pal, labels = legend_labels,
                     guide = guide_legend(title = NULL, nrow = 1)) +
   guides(fill = guide_legend(title = NULL, nrow = 1)) +
   labs(title = "North Carolina Coronavirus Relief Funds\nCounty Allocations Per Capita",
