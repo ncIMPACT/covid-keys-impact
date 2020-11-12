@@ -125,4 +125,4 @@ final_dat <- final %>%
   select(name, namelsad, geoid, rhc_testing_per_capita, rhc_testing_total, rhc_testing_score) %>%
   mutate(rhc_testing_score = if_else(is.na(rhc_testing_score), 0, 1))
 
-write_csv(final_dat, here("composite/hhs_uninsured_relief.csv"))
+write_csv(final_dat, here("composite/rhc_testing.csv"))
