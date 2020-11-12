@@ -65,6 +65,7 @@ final %>%
   pull(label) -> legend_labels
   
 p1 <- final %>%
+  filter(!(is.na(natural_breaks))) %>%
   ggplot() +
   geom_sf(data = nc_counties, color = "white", fill = "#F4E8DD") +
   geom_sf(aes(fill = natural_breaks), color = "white") +
@@ -88,7 +89,8 @@ final_dat <- final %>%
   mutate(hospital_crf_score = 1) %>%
   right_join(final) %>%
   as_tibble() %>%
-  select(name, namelsad, geoid, hospital_crf_score) %>%
+  rename(hospital_crf_per_capita = per_capita, hospital_crf_total = amount) %>%
+  select(name, namelsad, geoid, hospital_crf_per_capita, hospital_crf_total, hospital_crf_score) %>%
   mutate(hospital_crf_score = if_else(is.na(hospital_crf_score), 0, 1))
 
 write_csv(final_dat, here("composite/hospital_crf.csv"))

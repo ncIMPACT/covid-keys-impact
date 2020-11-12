@@ -39,10 +39,9 @@ nc_pop <- get_acs(geography = "county", variables = "B01003_001",
                   state = 37, key = api_key) %>%
   clean_names()
 
-hhs_uninsured <- read_csv(here("data/uninsured-relief-fund.csv"))
+hhs_awards <- read_csv(here("data/covid-19-award-details.csv"))
 
-cleaned <- hhs_uninsured %>%
-  filter(State == "NC") %>%
+cleaned <- hhs_awards %>%
   clean_names() %>%
   mutate(city = str_to_title(city)) %>%
   mutate(fix_city = case_when(
@@ -56,15 +55,23 @@ cleaned <- hhs_uninsured %>%
     city == "Saint Pauls" ~ "Lumberton",
     city == "Supply" ~ "Shallotte",
     city == "Swanquarter" ~ "Swan Quarter",
-    city == "Snow Camp" ~ "Burlington"
+    city == "Snow Camp" ~ "Burlington",
+    city == "Mcadenville" ~ "McAdenville",
+    city == "Mcleansville" ~ "McLeansville",
+    city == "Collettsville" ~ "Lenoir",
+    city == "Rsch Triangle Pk" ~ "Cary",
+    city == "Snowhill" ~ "Snow Hill",
+    city == "Winston-Salem" ~ "Winston Salem"
   )) %>%
   mutate(city = ifelse(is.na(fix_city), city, fix_city)) %>%
   select(-fix_city) %>%
   mutate(city = ifelse(city == "Bowman Gray School Of", "Winston Salem", city)) %>%
-  mutate(across(.cols = starts_with("claims"), .fns = ~str_remove(.x, "\\$"))) %>%
-  mutate(across(.cols = starts_with("claims"), .fns = ~str_remove(.x, "\\,"))) %>%
-  mutate(across(.cols = starts_with("claims"), .fns = as.numeric)) %>%
-  mutate(total_paid = claims_paid_by_treatment + claims_paid_by_testing) %>%
+  mutate(across(.cols = starts_with("award_amount"), .fns = ~str_remove_all(.x, "\\$"))) %>%
+  mutate(across(.cols = starts_with("award_amount"), .fns = ~str_remove_all(.x, "\\,"))) %>%
+  mutate(across(.cols = starts_with("award_amount"), .fns = ~str_replace(.x, "\\(", "-"))) %>%
+  mutate(across(.cols = starts_with("award_amount"), .fns = ~str_remove_all(.x, "\\)"))) %>%
+  mutate(across(.cols = starts_with("award_amount"), .fns = as.numeric)) %>%
+  mutate(total_paid = award_amount) %>%
   group_by(city, state) %>%
   summarise(total_paid = sum(total_paid, na.rm = T)) %>%
   ungroup() %>%
@@ -104,25 +111,25 @@ p1 <- final %>%
   geom_sf(aes(fill = natural_breaks), color = "white") +
   scale_fill_manual(values = blue_pal, labels = legend_labels,
                     guide = guide_legend(title = NULL, nrow = 1)) +
-  labs(title = "HHS Uninsured Relief Fund\nDistributions Per Capita",
-       subtitle = "Per capita claims reimbursement for COVID-19 testing of uninsured individuals\nand/or treatment for uninsured individuals with a COVID-19 diagnosis by county",
+  labs(title = "HHS COVID-19 Awards\nAwards Per Capita",
+       subtitle = "Awards made by HHS using emergency supplemental\nappropriation funding provided in the CARES Act",
        caption = "<b>Source:</b> HHS TAGGS") +
   map_theme
 
 p1 + inset_element(logo, left = 0.7, bottom = 0, right = 1, top = 0.09, align_to = 'full')
 
-ggsave(filename = "hhs-uninsured-relief.png", device = "png",
+ggsave(filename = "hhs-awards.png", device = "png",
        path = here("plots/"), dpi = "retina", width = 16, height = 9)         
 
 final_dat <- final %>%
   as_tibble() %>%
   filter(per_capita > median(final$per_capita, na.rm = T)) %>%
   select(geoid) %>%
-  mutate(hhs_uninsured_score = 1) %>%
+  mutate(hhs_awards_score = 1) %>%
   right_join(final) %>%
   as_tibble() %>%
-  rename(hhs_uninsured_per_capita = per_capita, hhs_uninsured_total = hhs_uninsured) %>%
-  select(name, namelsad, geoid, hhs_uninsured_per_capita, hhs_uninsured_total, hhs_uninsured_score) %>%
-  mutate(hhs_uninsured_score = if_else(is.na(hhs_uninsured_score), 0, 1))
+  rename(hhs_awards_per_capita = per_capita, hhs_awards_total = hhs_uninsured) %>%
+  select(name, namelsad, geoid, hhs_awards_per_capita, hhs_awards_total, hhs_awards_score) %>%
+  mutate(hhs_awards_score = if_else(is.na(hhs_awards_score), 0, 1))
 
-write_csv(final_dat, here("composite/hhs_uninsured_relief.csv"))
+write_csv(final_dat, here("composite/hhs_awards.csv"))

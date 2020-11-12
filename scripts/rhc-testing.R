@@ -118,10 +118,11 @@ final_dat <- final %>%
   as_tibble() %>%
   filter(per_capita > median(final$per_capita, na.rm = T)) %>%
   select(geoid) %>%
-  mutate(hhs_uninsured_score = 1) %>%
+  mutate(rhc_testing_score = 1) %>%
   right_join(final) %>%
   as_tibble() %>%
-  select(name, namelsad, geoid, hhs_uninsured_score) %>%
-  mutate(hhs_uninsured_score = if_else(is.na(hhs_uninsured_score), 0, 1))
+  rename(rhc_testing_per_capita = per_capita, rhc_testing_total = hhs_uninsured) %>%
+  select(name, namelsad, geoid, rhc_testing_per_capita, rhc_testing_total, rhc_testing_score) %>%
+  mutate(rhc_testing_score = if_else(is.na(rhc_testing_score), 0, 1))
 
 write_csv(final_dat, here("composite/hhs_uninsured_relief.csv"))
