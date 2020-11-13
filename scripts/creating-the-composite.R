@@ -7,6 +7,7 @@ hhs_uninsured <- read_csv(here("composite/hhs_uninsured_relief.csv"), col_types 
 hhs_rhc <- read_csv(here("composite/rhc_testing.csv"), col_types = cols("geoid" = col_character()))
 hhs_prov <- read_csv(here("composite/hhs_provider_relief.csv"), col_types = cols("geoid" = col_character()))
 hhs_awards <- read_csv(here("composite/hhs_awards.csv"), col_types = cols("geoid" = col_character()))
+nc_ppp <- read_csv(here("composite/ppp.csv"), col_types = cols("geoid" = col_character()))
 
 layer_one <- county_crf %>%
   left_join(select(hospital_crf, 3:6)) %>%
@@ -14,6 +15,7 @@ layer_one <- county_crf %>%
   left_join(select(hhs_rhc, 3:6)) %>%
   left_join(select(hhs_prov, 3:6)) %>%
   left_join(select(hhs_awards, 3:6)) %>%
+  left_join(select(nc_ppp, 3:6)) %>%
   mutate(across(.fns = ~replace_na(.x, 0))) %>%
   select(name, namelsad, geoid, ends_with("total"), ends_with("capita"), ends_with("score"))
 
