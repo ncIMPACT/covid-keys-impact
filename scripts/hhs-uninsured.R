@@ -61,8 +61,8 @@ cleaned <- hhs_uninsured %>%
   mutate(city = ifelse(is.na(fix_city), city, fix_city)) %>%
   select(-fix_city) %>%
   mutate(city = ifelse(city == "Bowman Gray School Of", "Winston Salem", city)) %>%
-  mutate(across(.cols = starts_with("claims"), .fns = ~str_remove(.x, "\\$"))) %>%
-  mutate(across(.cols = starts_with("claims"), .fns = ~str_remove(.x, "\\,"))) %>%
+  mutate(across(.cols = starts_with("claims"), .fns = ~str_remove_all(.x, "\\$"))) %>%
+  mutate(across(.cols = starts_with("claims"), .fns = ~str_remove_all(.x, "\\,"))) %>%
   mutate(across(.cols = starts_with("claims"), .fns = as.numeric)) %>%
   mutate(total_paid = claims_paid_by_treatment + claims_paid_by_testing) %>%
   group_by(city, state) %>%

@@ -61,8 +61,8 @@ cleaned <- rhc_testing %>%
   mutate(city = ifelse(is.na(fix_city), city, fix_city)) %>%
   select(-fix_city) %>%
   mutate(city = ifelse(city == "Bowman Gray School Of", "Winston Salem", city)) %>%
-  mutate(across(.cols = starts_with("award"), .fns = ~str_remove(.x, "\\$"))) %>%
-  mutate(across(.cols = starts_with("award"), .fns = ~str_remove(.x, "\\,"))) %>%
+  mutate(across(.cols = starts_with("award"), .fns = ~str_remove_all(.x, "\\$"))) %>%
+  mutate(across(.cols = starts_with("award"), .fns = ~str_remove_all(.x, "\\,"))) %>%
   mutate(across(.cols = starts_with("award"), .fns = as.numeric)) %>%
   mutate(total_paid = award_amount) %>%
   group_by(city, state) %>%
