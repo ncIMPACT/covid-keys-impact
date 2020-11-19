@@ -21,6 +21,24 @@ layer_one <- county_crf %>%
 
 write_csv(layer_one, file = here("composite/layer-one-composite.csv"))
 
+zhvi <- read_csv(here("composite/zhvi.csv"), col_types = cols("geoid" = col_character()))
+unemp <- read_csv(here("composite/unemp.csv"), col_types = cols("geoid" = col_character()))
+tax_sales <- read_csv(here("composite/tax-sales.csv"), col_types = cols("geoid" = col_character()))
+tax_dist <- read_csv(here("composite/tax-distributions.csv"), col_types = cols("geoid" = col_character()))
+covid <- read_csv(here("composite/cases-per.csv"), col_types = cols("geoid" = col_character()))
+ui_claims <- read_csv(here("composite/ui-claims.csv"), col_types = cols("geoid" = col_character()))
+
+layer_two <- zhvi %>%
+  left_join(select(unemp, 3:5)) %>%
+  left_join(select(tax_sales, 3:5)) %>%
+  left_join(select(tax_dist, 3:5)) %>%
+  left_join(select(covid, 3:5)) %>%
+  left_join(select(ui_claims, 3:6)) %>%
+  mutate(across(.fns = ~replace_na(.x, 0))) %>%
+  select(name, namelsad, geoid, ends_with("change"), ends_with("per"), ends_with("score"))
+
+write_csv(layer_two, file = here("composite/layer-two-composite.csv"))
+
 layer_one %>%
   select(name, namelsad, geoid, ends_with("score")) %>%
   pivot_longer(cols = ends_with("score"), names_to = "layer_metric", values_to = "score") %>%
