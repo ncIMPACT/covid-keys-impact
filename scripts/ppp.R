@@ -96,14 +96,10 @@ ggsave(filename = "nc-ppp.png", device = "png",
        path = here("plots/"), dpi = "retina", width = 16, height = 9)         
 
 final_dat <- final %>%
+  replace_na(list(per_capita = 0, hhs_uninsured = 0)) %>%
   as_tibble() %>%
-  filter(per_capita > median(final$per_capita, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(ppp_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  mutate(ppp_score = (per_capita - mean(final$per_capita, na.rm = T)) / sd(final$per_capita, na.rm = T)) %>%
   rename(ppp_per_capita = per_capita, ppp_total = hhs_uninsured) %>%
-  select(name, namelsad, geoid, ppp_per_capita, ppp_total, ppp_score) %>%
-  mutate(ppp_score = if_else(is.na(ppp_score), 0, 1))
+  select(name, namelsad, geoid, ppp_per_capita, ppp_total, ppp_score)
 
 write_csv(final_dat, here("composite/ppp.csv"))

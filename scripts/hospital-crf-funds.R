@@ -82,15 +82,9 @@ ggsave(filename = "hospitals-crf.png", device = "png",
        path = here("plots/"), dpi = "retina", width = 16, height = 9)
 
 final_dat <- final %>%
-  filter(!(is.na(natural_breaks))) %>%
   as_tibble() %>%
-  filter(per_capita > median(final$per_capita, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(hospital_crf_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  mutate(hospital_crf_score = (per_capita - mean(final$per_capita, na.rm = T)) / sd(final$per_capita, na.rm = T)) %>%
   rename(hospital_crf_per_capita = per_capita, hospital_crf_total = amount) %>%
-  select(name, namelsad, geoid, hospital_crf_per_capita, hospital_crf_total, hospital_crf_score) %>%
-  mutate(hospital_crf_score = if_else(is.na(hospital_crf_score), 0, 1))
+  select(name, namelsad, geoid, hospital_crf_per_capita, hospital_crf_total, hospital_crf_score)
 
 write_csv(final_dat, here("composite/hospital_crf.csv"))

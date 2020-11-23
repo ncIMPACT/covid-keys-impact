@@ -1,12 +1,15 @@
 library(tidyverse)
 library(tidycensus)
-library(ggtext)
-library(extrafont)
-library(classInt)
-library(sf)
-library(here)
-library(patchwork)
 library(tigris)
+library(sf)
+library(extrafont)
+library(here)
+library(ggtext)
+library(janitor)
+library(patchwork)
+library(classInt)
+library(glue)
+library(lubridate)
 
 source(here("api_key/census_api_key.R"))
 
@@ -29,6 +32,12 @@ logo <- png::readPNG(here("logo/black-logo-long.png"), native = TRUE)
 blue_pal <- c("#CFE8F3", "#73BFE2","#1696D2","#0A4C6A","#000000")
 
 nc_counties <- counties(state = 37)
+nc_counties_merge <- nc_counties %>%
+  as_tibble() %>%
+  select(-geometry) %>%
+  clean_names() %>%
+  rename(county_geoid = geoid, county_name = name, county_full_name = namelsad) %>%
+  select(county_geoid, county_name, county_full_name)
 
 # Dependency Ratio: 1)Population under 18 - B09001_001, 2) 65 Years and Over - B08101_008, 3) 18 to 64 - B16004_024
 pop_18_un <- get_acs(geography = "tract", variables = "B09001_001",
@@ -52,45 +61,59 @@ depend_ratio <- mid %>%
   rename(mid = estimate) %>%
   left_join(pop_18_un) %>%
   left_join(over_65) %>%
-  mutate(estimate = (pop_18_un + over_65) / mid) %>%
+  mutate(estimate = round((pop_18_un + over_65) / mid, digits = 2)) %>%
+  mutate(estimate = ifelse(is.nan(estimate), 0, estimate)) %>%
   select(-mid, -pop_18_un, -over_65)
 
-natural_breaks <- classIntervals(filter(depend_ratio, !(is.na(estimate)))$estimate, 5, style = "jenks")
+cleaned <- depend_ratio %>%
+  mutate(depend_ratio = estimate) %>%
+  mutate(county_geoid = substr(GEOID, 1, 5)) %>%
+  clean_names() %>%
+  select(geoid, name, county_geoid, depend_ratio) %>%
+  left_join(nc_counties_merge, by = "county_geoid")
 
-p1 <- depend_ratio %>%
-  mutate(natural_breaks = cut(estimate, breaks = c(natural_breaks$brks[1]-.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
-  filter(!(is.nan(estimate))) %>%
+natural_breaks <- classIntervals(filter(cleaned, !(is.na(depend_ratio)))$depend_ratio, 5, style = "jenks")
+
+final <- cleaned %>%
+  mutate(natural_breaks = cut(depend_ratio, breaks = c(-0.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
+  mutate(upper = str_extract(natural_breaks, "[^(]*(?=,)")) %>%
+  mutate(lower = str_extract(natural_breaks, "(?<=,)[^\\]]*")) %>%
+  mutate(upper = ifelse(upper == "-0.01", "0", upper)) %>%
+  mutate(label = glue("{upper} to {lower}"))
+
+final %>%
+  filter(!(is.na(natural_breaks))) %>%
+  as_tibble() %>%
+  distinct(natural_breaks, .keep_all = T) %>%
+  select(natural_breaks, label) %>%
+  arrange(natural_breaks) %>%
+  pull(label) -> legend_labels
+
+p1 <- final %>%
+  filter(!(is.na(depend_ratio))) %>%
   ggplot() +
-  geom_sf(aes(fill = natural_breaks)) +
-  guides(fill = guide_legend(title = NULL, nrow = 1)) +
+  geom_sf(data = nc_counties, color = "white", fill = "#F4E8DD") +
+  geom_sf(aes(fill = natural_breaks), color = "#151515", size = 0.01) +
+  scale_fill_manual(values = blue_pal, labels = legend_labels,
+                    guide = guide_legend(title = NULL, nrow = 1)) +
   labs(title = "Dependency Ratio by Census Tract",
        subtitle = "Dependency Ratio is an age-population ratio of those typically not in the labor force\n(under 18 & over 65) and those typically in the labor force (population 18 to 64)",
-       caption = "<b>Source:</b> Census Bureau, 5 Year ACS") +
-  scale_fill_manual(values = blue_pal, na.value = "#F4E8DD",
-                    labels = c("0 - 0.209", "0.209 - 0.344", "0.344 - 0.436", "0.436 - 0.544", "0.544 - 1")) +
+       caption = "<b>Source:</b> Census Bureau 5 Year ACS") +
   map_theme
 
 p1 + inset_element(logo, left = 0.7, bottom = 0, right = 1, top = 0.09, align_to = 'full')
 
-ggsave(filename = "depend.png", device = "png",
-       path = "C:/Users/jsnjns/Desktop/", dpi = "retina", width = 16, height = 9)
+ggsave(filename = "acs-depend.png", device = "png",
+       path = here("plots/"), dpi = "retina", width = 16, height = 9)         
 
-p2 <- depend_ratio %>%
-  mutate(natural_breaks = cut(estimate, breaks = c(natural_breaks$brks[1]-.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
-  filter(!(is.nan(estimate))) %>%
-  filter(estimate > median(depend_ratio$estimate, na.rm = T)) %>%
-  ggplot() +
-  geom_sf(data = nc_counties, fill = "#F4E8DD", color = "white") +
-  geom_sf(aes(fill = natural_breaks)) +
-  guides(fill = guide_legend(title = NULL, nrow = 1)) +
-  labs(title = "Dependency Ratio by Census Tract\nAbove State Median",
-       subtitle = "Dependency Ratio is an age-population ratio of those typically not in the labor force\n(under 18 & over 65) and those typically in the labor force (population 18 to 64)",
-       caption = "<b>Source:</b> Census Bureau, 5 Year ACS") +
-  scale_fill_manual(values = blue_pal[3:5], na.value = "#F4E8DD",
-                    labels = c("0.344 - 0.436", "0.436 - 0.544", "0.544 - 1")) +
-  map_theme
+final_dat <- final %>%
+  mutate(depend_score = (depend_ratio - mean(final$depend_ratio, na.rm = T)) / sd(final$depend_ratio, na.rm = T)) %>%
+  select(geoid, depend_score) %>%
+  as_tibble() %>%
+  select(-geometry) %>%
+  right_join(final) %>%
+  as_tibble() %>%
+  rename(tract_name = name, tract_geoid = geoid) %>%
+  select(tract_geoid, tract_name, county_geoid, county_name, county_full_name, depend_ratio, depend_score)
 
-p2 + inset_element(logo, left = 0.7, bottom = 0, right = 1, top = 0.09, align_to = 'full')
-
-ggsave(filename = "depend_above.png", device = "png",
-       path = "C:/Users/jsnjns/Desktop/", dpi = "retina", width = 16, height = 9)
+write_csv(final_dat, here("composite/acs-depend.csv"))

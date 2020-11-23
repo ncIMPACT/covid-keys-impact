@@ -77,13 +77,8 @@ ggsave(filename = "counties-crf.png", device = "png",
 
 final <- merged %>%
   as_tibble() %>%
-  filter(per_capita > median(merged$per_capita, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(county_crf_score = 1) %>%
-  right_join(merged) %>%
-  as_tibble() %>%
+  mutate(county_crf_score = (per_capita - mean(merged$per_capita, na.rm = T)) / sd(merged$per_capita, na.rm = T)) %>%
   rename(county_crf_per_capita = per_capita, county_crf_total = total_allocation) %>%
-  select(name, namelsad, geoid, county_crf_per_capita, county_crf_total, county_crf_score) %>%
-  mutate(county_crf_score = if_else(is.na(county_crf_score), 0, 1))
+  select(name, namelsad, geoid, county_crf_per_capita, county_crf_total, county_crf_score)
 
 write_csv(final, here("composite/county_crf.csv"))

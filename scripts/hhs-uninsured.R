@@ -115,14 +115,10 @@ ggsave(filename = "hhs-uninsured-relief.png", device = "png",
        path = here("plots/"), dpi = "retina", width = 16, height = 9)         
 
 final_dat <- final %>%
+  replace_na(list(per_capita = 0, hhs_uninsured = 0)) %>%
   as_tibble() %>%
-  filter(per_capita > median(final$per_capita, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(hhs_uninsured_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  mutate(hhs_uninsured_score = (per_capita - mean(final$per_capita, na.rm = T)) / sd(final$per_capita, na.rm = T)) %>%
   rename(hhs_uninsured_per_capita = per_capita, hhs_uninsured_total = hhs_uninsured) %>%
-  select(name, namelsad, geoid, hhs_uninsured_per_capita, hhs_uninsured_total, hhs_uninsured_score) %>%
-  mutate(hhs_uninsured_score = if_else(is.na(hhs_uninsured_score), 0, 1))
+  select(name, namelsad, geoid, hhs_uninsured_per_capita, hhs_uninsured_total, hhs_uninsured_score)
 
 write_csv(final_dat, here("composite/hhs_uninsured_relief.csv"))
