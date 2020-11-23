@@ -109,13 +109,9 @@ ggsave(filename = "covid-cases.png", device = "png",
 
 final_dat <- final %>%
   as_tibble() %>%
-  filter(cases_per > median(final$cases_per, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(cases_per_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  replace_na(list(cases_per = 0)) %>%
+  mutate(cases_per_score = (cases_per - mean(final$cases_per, na.rm = T)) / sd(final$cases_per, na.rm = T)) %>%
   rename(name = county) %>%
-  select(name, namelsad, geoid, cases_per, cases_per_score) %>%
-  mutate(cases_per_score = if_else(is.na(cases_per_score), 0, 1))
+  select(name, namelsad, geoid, cases_per, cases_per_score)
 
 write_csv(final_dat, here("composite/cases-per.csv"))

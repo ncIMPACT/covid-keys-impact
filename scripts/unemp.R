@@ -79,13 +79,9 @@ ggsave(filename = "unemp-change.png", device = "png",
 
 final_dat <- final %>%
   as_tibble() %>%
-  filter(change > median(final$change, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(unemp_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  replace_na(list(change = 0)) %>%
+  mutate(unemp_score = (change - mean(final$change, na.rm = T)) / sd(final$change, na.rm = T)) %>%
   rename(unemp_change = change) %>%
-  select(name, namelsad, geoid, unemp_change, unemp_score) %>%
-  mutate(unemp_score = if_else(is.na(unemp_score), 0, 1))
+  select(name, namelsad, geoid, unemp_change, unemp_score)
 
 write_csv(final_dat, here("composite/unemp.csv"))

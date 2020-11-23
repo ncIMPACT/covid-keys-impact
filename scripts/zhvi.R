@@ -82,14 +82,10 @@ ggsave(filename = "zhvi-change.png", device = "png",
 
 final_dat <- final %>%
   clean_names() %>%
+  replace_na(list(change = 0)) %>%
   as_tibble() %>%
-  filter(change > median(final$change, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(zhvi_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  mutate(zhvi_score = (change - mean(final$change, na.rm = T)) / sd(final$change, na.rm = T)) %>%
   rename(zhvi_pct_change = change, namelsad = region_name) %>%
-  select(name, namelsad, geoid, zhvi_pct_change, zhvi_score) %>%
-  mutate(zhvi_score = if_else(is.na(zhvi_score), 0, 1))
+  select(name, namelsad, geoid, zhvi_pct_change, zhvi_score)
 
 write_csv(final_dat, here("composite/zhvi.csv"))

@@ -85,13 +85,9 @@ ggsave(filename = "tax-distributions.png", device = "png",
 
 final_dat <- final %>%
   as_tibble() %>%
-  filter(change < median(final$change, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(tax_distribution_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  replace_na(list(change = 0)) %>%
+  mutate(tax_distribution_score = ((change - mean(final$change, na.rm = T)) / sd(final$change, na.rm = T)) * -1) %>%
   rename(tax_distribution_change = change, name = county) %>%
-  select(name, namelsad, geoid, tax_distribution_change, tax_distribution_score) %>%
-  mutate(tax_distribution_score = if_else(is.na(tax_distribution_score), 0, 1))
+  select(name, namelsad, geoid, tax_distribution_change, tax_distribution_score)
 
 write_csv(final_dat, here("composite/tax-distributions.csv"))

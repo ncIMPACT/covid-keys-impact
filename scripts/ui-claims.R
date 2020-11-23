@@ -90,13 +90,9 @@ ggsave(filename = "ui-claims.png", device = "png",
 
 final_dat <- final %>%
   as_tibble() %>%
-  filter(ui_claims_per > median(final$ui_claims_per, na.rm = T)) %>%
-  select(geoid) %>%
-  mutate(ui_claims_score = 1) %>%
-  right_join(final) %>%
-  as_tibble() %>%
+  replace_na(list(ui_claims_per = 0)) %>%
+  mutate(ui_claims_score = (ui_claims_per - mean(final$ui_claims_per, na.rm = T)) / sd(final$ui_claims_per, na.rm = T)) %>%
   rename(name = county, ui_claimants = total_claimants) %>%
-  select(name, namelsad, geoid, ui_claimants, ui_claims_per, ui_claims_score) %>%
-  mutate(ui_claims_score = if_else(is.na(ui_claims_score), 0, 1))
+  select(name, namelsad, geoid, ui_claimants, ui_claims_per, ui_claims_score)
 
 write_csv(final_dat, here("composite/ui-claims.csv"))
