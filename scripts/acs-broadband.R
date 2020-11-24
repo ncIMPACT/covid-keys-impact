@@ -39,28 +39,23 @@ nc_counties_merge <- nc_counties %>%
   rename(county_geoid = geoid, county_name = name, county_full_name = namelsad) %>%
   select(county_geoid, county_name, county_full_name)
 
-school <- get_acs(geography = "tract", table = "B14001", state = 37,
-                        key = api_key, geometry = T)
+broadband <- get_acs(geography = "tract", variables = "B28011_004", state = 37,
+                        key = api_key, summary_var = "B28011_001", geometry = T)
 
-cleaned <- school %>%
-  as_tibble() %>%
-  select(-moe) %>%
-  pivot_wider(names_from = variable, values_from = estimate) %>%
-  mutate(school_total = B14001_003 + B14001_004 + B14001_005 + B14001_006 + B14001_007) %>%
-  mutate(school_age = school_total / B14001_001) %>%
-  select(GEOID, NAME, school_total, school_age, geometry) %>%
-  st_as_sf() %>%
-  mutate(school_age = ifelse(is.nan(school_age), 0, school_age)) %>%
-  mutate(school_age = round(school_age, digits = 2)) %>%
+cleaned <- broadband %>%
+  mutate(broadband_rate = estimate / summary_est) %>%
+  mutate(broadband_rate = ifelse(is.nan(broadband_rate), 0, broadband_rate)) %>%
+  mutate(broadband_rate = round(broadband_rate, digits = 2)) %>%
+  rename(broadband_total = estimate) %>%
   mutate(county_geoid = substr(GEOID, 1, 5)) %>%
   clean_names() %>%
-  select(geoid, name, county_geoid, school_total, school_age) %>%
+  select(geoid, name, county_geoid, broadband_total, broadband_rate) %>%
   left_join(nc_counties_merge, by = "county_geoid")
 
-natural_breaks <- classIntervals(filter(cleaned, !(is.na(school_age)))$school_age, 5, style = "jenks")
+natural_breaks <- classIntervals(filter(cleaned, !(is.na(broadband_rate)))$broadband_rate, 5, style = "jenks")
 
 final <- cleaned %>%
-  mutate(natural_breaks = cut(school_age, breaks = c(-0.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
+  mutate(natural_breaks = cut(broadband_rate, breaks = c(-0.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
   mutate(upper = str_extract(natural_breaks, "[^(]*(?=,)")) %>%
   mutate(lower = str_extract(natural_breaks, "(?<=,)[^\\]]*")) %>%
   mutate(upper = ifelse(upper == "-0.01", "0", upper)) %>%
@@ -75,30 +70,30 @@ final %>%
   pull(label) -> legend_labels
 
 p1 <- final %>%
-  filter(!(is.na(school_age))) %>%
+  filter(!(is.na(broadband_rate))) %>%
   ggplot() +
   geom_sf(data = nc_counties, color = "white", fill = "#F4E8DD") +
   geom_sf(aes(fill = natural_breaks), color = "#151515", size = 0.01) +
-  scale_fill_manual(values = blue_pal, labels = legend_labels,
+  scale_fill_manual(values = rev(blue_pal), labels = legend_labels,
                     guide = guide_legend(title = NULL, nrow = 1)) +
-  labs(title = "School Age Children",
-       subtitle = "Percentage of population, 3 years and over, currently enrolled in School\nCensus Tracts with no or insufficient data have been removed",
-       caption = "<b>Source:</b> Census Bureau 5 Year ACS<br><b>Note: </b>School is defined as Nursery or Preschool through Grade 12") +
+  labs(title = "Broadband Access",
+       subtitle = "Percent of households with subscription to broadband such as cable, fiber optic, or DSL\nCensus Tracts with no or insufficient data have been removed",
+       caption = "<b>Source:</b> Census Bureau 5 Year ACS") +
   map_theme
 
 p1 + inset_element(logo, left = 0.7, bottom = 0, right = 1, top = 0.09, align_to = 'full')
 
-ggsave(filename = "acs-school-age.png", device = "png",
+ggsave(filename = "acs-broadband.png", device = "png",
        path = here("plots/"), dpi = "retina", width = 16, height = 9)
 
 final_dat <- final %>%
-  mutate(acs_school_score = (school_age - mean(final$school_age, na.rm = T)) / sd(final$school_age, na.rm = T)) %>%
-  select(geoid, acs_school_score) %>%
+  mutate(acs_broadband_score = ((broadband_rate - mean(final$broadband_rate, na.rm = T)) / sd(final$broadband_rate, na.rm = T)) * -1) %>%
+  select(geoid, acs_broadband_score) %>%
   as_tibble() %>%
   select(-geometry) %>%
   right_join(final) %>%
   as_tibble() %>%
   rename(tract_name = name, tract_geoid = geoid) %>%
-  select(tract_geoid, tract_name, county_geoid, county_name, county_full_name, school_total, school_age, acs_school_score)
+  select(tract_geoid, tract_name, county_geoid, county_name, county_full_name, broadband_total, broadband_rate, acs_broadband_score)
 
-write_csv(final_dat, here("composite/acs-school-age.csv"))
+write_csv(final_dat, here("composite/acs-broadband.csv"))

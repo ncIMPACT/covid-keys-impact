@@ -1,4 +1,4 @@
-tract_geoid,tract_name,county_geoid,county_name,county_full_name,school_total,school_age,acs_pov_score
+tract_geoid,tract_name,county_geoid,county_name,county_full_name,school_total,school_age,acs_school_score
 37085070901,"Census Tract 709.01, Harnett County, North Carolina",37085,Harnett,Harnett County,724,0.24,1.0843879504027958
 37025042102,"Census Tract 421.02, Cabarrus County, North Carolina",37025,Cabarrus,Cabarrus County,1015,0.27,1.6176735854589883
 37027030100,"Census Tract 301, Caldwell County, North Carolina",37027,Caldwell,Caldwell County,947,0.19,0.19557855864247572
