@@ -39,9 +39,22 @@ layer_two <- zhvi %>%
 
 write_csv(layer_two, file = here("composite/layer-two-composite.csv"))
 
-layer_one %>%
-  select(name, namelsad, geoid, ends_with("score")) %>%
-  pivot_longer(cols = ends_with("score"), names_to = "layer_metric", values_to = "score") %>%
-  group_by(name, geoid) %>%
-  summarise(total = sum(score)) %>%
-  arrange(desc(total))
+acs_unemp <- read_csv(here("composite/acs-unemp.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+acs_pov <- read_csv(here("composite/acs-pov.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+acs_school <- read_csv(here("composite/acs-school-age.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+acs_broadband <- read_csv(here("composite/acs-broadband.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+acs_health <- read_csv(here("composite/acs-health.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+acs_depend <- read_csv(here("composite/acs-depend.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+acs_white <- read_csv(here("composite/acs-white.csv"), col_types = cols("tract_geoid" = col_character(), "county_geoid" = col_character()))
+
+layer_three <- acs_unemp %>%
+  left_join(acs_pov) %>%
+  left_join(acs_school) %>%
+  left_join(acs_broadband) %>%
+  left_join(acs_health) %>%
+  left_join(acs_depend) %>%
+  left_join(acs_white) %>%
+  mutate(across(.fns = ~replace_na(.x, 0))) %>%
+  select(1:5, ends_with("total"), ends_with("rate"), ends_with("pct"), school_age, depend_ratio, ends_with("score"))
+
+write_csv(layer_three, file = here("composite/layer-three-composite.csv"))
