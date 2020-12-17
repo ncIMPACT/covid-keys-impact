@@ -1,0 +1,157 @@
+---
+title: "Information to Action Framework"
+description: |
+  Data-informed decision making in the face of crisis.
+author:
+  - name: Jason Jones
+    url: https://www.sog.unc.edu/about/faculty-and-staff/jason-jones
+    affiliation: ncIMPACT Initiative
+    affiliation_url: https://ncimpact.sog.unc.edu/
+date: "`r Sys.Date()`"
+output: 
+  distill::distill_article:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE)
+
+library(tidyverse)
+library(gt)
+
+dat <- read_csv("data/layers.csv")
+```
+
+## Understanding
+
+The COVID-19 pandemic has changed a lot for us both personally and professionally. Some of us may be working from home in a completely different way and some of us may be working on entirely new programs or initiatives that are a direct result of the pandemic's impact on our community. Some of our organizations may be facing revenue reductions due to shifting consumer demands which have forced hiring and merit freezes or position cuts. We also should not ignore that, while this is happening for us professionally, many of us may have been personally impacted by the loss of a loved one or increased stress at home due to remote learning.
+
+The ncIMPACT Initiative has been working alongside you to try to understand how you all, as local leaders on the front lines, have found an effective path forward given this incredible context. We have observed some relative consistency in the way that decisions have been approached in communities across the state and the country. The Information to Action Framework we have put together for you all is intended to distill this observation into something we hope might be usable and replicable regardless of the size of your community or the resources you have at your disposal.
+
+## Assumption
+
+The framework itself is built on a simple foundational assumption. In our decision-making processes, we are using some combination of information to directly inform and ultimately guide our actions. The bits of information we use can take many forms. Some of those might be:
+
+-   Personal or professional experience.
+
+-   Subject-matter expert guidance or interpretation.
+
+-   Resident surveys or focus groups (qualitative data).
+
+-   Data from our software systems (quantitative data).
+
+This list is not intended to be comprehensive but to just show some of the forms this information can take. Looking at this list, you may already be thinking of the ways that you have used these bits of information in the past to make decisions. You may also be thinking that it may be difficult at times to discern what combination of information is appropriate for a decision. We believe that the COVID-19 Pandemic is one of those times.
+
+We propose this simple framework for you as a starting point for action.
+
+## Framework
+
+What was presented prior was only the third key component of our Information to Action Framework. We believe that, at a minimum, there are three primary components for moving from information to action.
+
+\<\<Insert Image Here\>\>
+
+We outline these components for you to help you develop an understanding for how you might use this framework in this moment or future moments of crisis to feel confident that you are moving forward responsibly towards some community action or response. We also are taking a deep dive into indicators to provide timely support as this may be the most difficult and time consuming component to give ample time and attention to.
+
+### Component 1: Culture
+
+The first key component of the information framework is your own organizational and community culture. Important decisions, particularly in moments of crisis, should be a reflection of the established vision and values for your organization and community. This is often neglected or forgotten when making decisions or ignored in moments of crisis if not already well established.
+
+There is little to no time to establish these in the face of crisis, but at the very least you may want to seek community and organizational input on values and vision if you have never done so before. It is critical that you remain firm in the values you have established as decision-making guard rails and keep a vigilant eye towards the strategic vision for your organization and community. Strategy may rapidly change but these should remain a comforting constant.
+
+### Component 2: Expertise & Experience
+
+The second key component of the information framework is local, state, and national expertise and experience that you may be able to tap in to. Consulting with your very knowledgeable and experienced staff and residents or reaching out to UNC School of Government faculty could tremendously augment the perspective that you have heading in to an important decision making process.
+
+Even if you are one of the most knowledgeable and experienced professionals out there, it is impossible for you to go-it alone. Make time for seeking and valuing the input of others. Emphasize diversity of thought and perspective and your actions will be all the better for it.
+
+### Component 3: Indicators
+
+The third key component of the information framework is quantitative data. Based on our engagement and research, we propose a three tiered approach which includes:
+
+1.  Developing an understanding of a community's resilience and/or disposition towards widening inequity using publicly available Census data at the Census Tract level.
+
+2.  Developing an understanding, where data is available, of the emergency financial support resources received which may be masking short-term consequences and delaying second-order impacts of the pandemic at the county level.
+
+3.  Developing an understanding of real-time fluctuations in a selection of publicly available indicators at the county level.
+
+We propose the combination of publicly available data to understand where economic growth and recovery may be most challenging and where communities may be at the greatest risk of the disproportionate impact of COVID-19 and widening inequities. This composite approach acknowledges the complex operating context for local government and the intricate social fabric in communities that makes it almost impossible to adopt a one-size-fits-all understanding.
+
+The selection of indicators we propose is not intended to be comprehensive and we also do not assume that this will be the proper mix for every jurisdiction. We encourage you to be flexible within these categories and pursue indicators within each that may more adequately conform to your local context.
+
+#### Community Resilience
+
+Developing an understanding of a community's resilience and/or disposition towards widening inequity using publicly available Census data at the Census Tract level.
+
+```{r}
+dat %>%
+  filter(layer == "three") %>%
+  select(title, steward) %>%
+  gt() %>%
+  cols_label(title = "Metric", steward = "Data Steward") %>%
+  tab_style(style = list(cell_text(weight = "bold", align = "center"),
+                         cell_borders(sides = "bottom", weight = px(3))),
+            locations = list(cells_column_labels(everything()))) %>%
+  tab_style(style = list(cell_text(align = "right"),
+                         cell_borders(sides = "left", weight = px(3))),
+            locations = cells_body(columns = vars(steward))) %>%
+  cols_width(everything() ~ pct(50))
+```
+
+#### Emergency Financial Support
+
+Developing an understanding, where data is available, of the emergency financial support resources received which may be masking short-term consequences and delaying second-order impacts of the pandemic at the county level.
+
+```{r}
+dat %>%
+  filter(layer == "two") %>%
+  select(title, steward) %>%
+  gt() %>%
+  cols_label(title = "Metric", steward = "Data Steward") %>%
+  tab_style(style = list(cell_text(weight = "bold", align = "center"),
+                         cell_borders(sides = "bottom", weight = px(3))),
+            locations = list(cells_column_labels(everything()))) %>%
+  tab_style(style = list(cell_text(align = "right"),
+                         cell_borders(sides = "left", weight = px(3))),
+            locations = cells_body(columns = vars(steward))) %>%
+  cols_width(everything() ~ pct(50))
+```
+
+#### Real-Time Fluctuations
+
+Developing an understanding of real-time fluctuations in a selection of publicly available indicators at the county level.
+
+```{r}
+dat %>%
+  filter(layer == "one") %>%
+  select(title, steward) %>%
+  gt() %>%
+  cols_label(title = "Metric", steward = "Data Steward") %>%
+  tab_style(style = list(cell_text(weight = "bold", align = "center"),
+                         cell_borders(sides = "bottom", weight = px(3))),
+            locations = list(cells_column_labels(everything()))) %>%
+  tab_style(style = list(cell_text(align = "right"),
+                         cell_borders(sides = "left", weight = px(3))),
+            locations = cells_body(columns = vars(steward))) %>%
+  cols_width(everything() ~ pct(50))
+```
+
+### Standardized Indicators
+
+\<\<Insert explanation of z-scores\>\>
+
+## COVID Composites
+
+\<\<Insert composite visuals and explanations\>\>
+
+## Choose Your Own Adventure
+
+\<\<Insert explanation of future tool\>\>
+
+## Wrapping-Up
+
+As you head into next year, we hope our framework and this non-comprehensive selection of indicators will offer tremendous guidance to the recovery landscape for communities in North Carolina. The indicators have been strategically selected to help communities in North Carolina think about how to make tough decisions over the next 6-12 months to prioritize limited resources in the face of this crisis. We hope that this becomes a valuable tool for you and point of reference which may serve even broader use cases.
+
+Please also keep any eye out for more information about a web platform that we hope to release in the next month which will give you easy access to data for all of the metrics we have presented here today.
+
+# 

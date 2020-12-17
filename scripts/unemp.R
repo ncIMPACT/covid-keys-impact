@@ -35,7 +35,7 @@ nc_counties <- counties(state = 37)
 unemp <- read_csv(here("data/unemployment-rate.csv")) %>%
   clean_names() %>%
   filter(str_starts(region_code, "37")) %>%
-  mutate(change = x2020_september - x2019_september) %>%
+  mutate(change = x2020_october - x2019_october) %>%
   select(region_name, region_code, change) %>%
   rename(geoid = region_code)
 
@@ -47,7 +47,7 @@ natural_breaks <- classIntervals(cleaned$change, 5, style = "jenks")
 
 final <- cleaned %>%
   clean_names() %>%
-  mutate(natural_breaks = cut(change, breaks = c(0, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
+  mutate(natural_breaks = cut(change, breaks = c(natural_breaks$brks[1]-0.01, natural_breaks$brks[2:length(natural_breaks$brks)]))) %>%
   mutate(upper = str_extract(natural_breaks, "[^(]*(?=,)")) %>%
   mutate(lower = str_extract(natural_breaks, "(?<=,)[^\\]]*")) %>%
   mutate(label = glue("{upper} to {lower}"))
@@ -68,7 +68,7 @@ p1 <- final %>%
   scale_fill_manual(values = blue_pal, labels = legend_labels,
                     guide = guide_legend(title = NULL, nrow = 1)) +
   labs(title = "Unemployment Rate Twelve Month Change",
-       subtitle = "Change in unemployment rate between September 2019 and September 2020",
+       subtitle = "Change in unemployment rate between October 2019 and October 2020",
        caption = "<b>Source:</b> U.S. Bureau of Labor Statistics, retrieved from FRED") +
   map_theme
 

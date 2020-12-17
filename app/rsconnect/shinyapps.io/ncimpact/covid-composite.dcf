@@ -1,0 +1,12 @@
+name: covid-composite
+title: covid-composite
+username:
+account: ncimpact
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3390180
+bundleId: 3977940
+url: https://ncimpact.shinyapps.io/covid-composite/
+when: 1607741576.75032
+asMultiple: FALSE
+asStatic: FALSE
