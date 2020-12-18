@@ -22,17 +22,17 @@ Welcome to our primary documentation site for our COVID Composite tool. Here you
 
 We also hope that those of you that are more technical will find that this open-source distribution will allow you to jump right in and play around.
 
-# Project License
+## Project License
 
 Software licensed under the [GNU General Public License v3.0](https://github.com/ncIMPACT/covid-keys-impact/blob/main/LICENSE)
 
-# Information to Action Framework
+## Information to Action Framework
 
 If you are interested in integrating this tool into our broader Information to Action Framework, please check out [our blog post here](https://ncimpact.sog.unc.edu/)!
 
-# Composite Metrics & Visualizations
+## Composite Metrics & Visualizations
 
-## Community Resilience
+### Community Resilience
 
 1.  [Unemployment Rate](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-unemp.png)
 
@@ -48,7 +48,7 @@ If you are interested in integrating this tool into our broader Information to A
 
 7.  [Dependency Ratio](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-depend.png)
 
-## Emergency Financial Support
+### Emergency Financial Support
 
 1.  [NC CRF County Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/counties-crf.png)
 
@@ -64,7 +64,7 @@ If you are interested in integrating this tool into our broader Information to A
 
 7.  [Paycheck Protection Program Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/nc-ppp.png)
 
-## Real-Time Fluctuations
+### Real-Time Fluctuations
 
 1.  [Percent Change in Three Bedroom Home Values](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/zhvi-change.png)
 
@@ -78,7 +78,7 @@ If you are interested in integrating this tool into our broader Information to A
 
 6.  [Unemployment Insurance Claimants Per 1,000 Residents](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/ui-claims.png)
 
-## Aggregate Composite Layers
+### Aggregate Composite Layers
 
 1.  [Community Resilience Composite](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/prior-position-composite.png)
 
@@ -86,7 +86,7 @@ If you are interested in integrating this tool into our broader Information to A
 
 3.  [Real-Time Fluctuations Composite](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/real-time-composite.png)
 
-# Available Data Files
+## Available Data Files
 
 -   [Continued Unemployment Insurance Claims](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/continued-ui-claims.csv)
 

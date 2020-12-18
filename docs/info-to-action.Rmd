@@ -23,7 +23,7 @@ library(gt)
 dat <- read_csv("data/layers.csv")
 ```
 
-# Composite Background
+## Composite Background
 
 Based on our engagement and research, we propose a three tiered approach which includes:
 
@@ -37,11 +37,11 @@ We propose the combination of publicly available data to understand where econom
 
 The selection of indicators we propose is not intended to be comprehensive and we also do not assume that this will be the proper mix for every jurisdiction. We encourage you to be flexible within these categories and pursue indicators within each that may more adequately conform to your local context.
 
-# Community Resilience
+## Community Resilience
 
 Developing an understanding of a community's resilience and/or disposition towards widening inequity using publicly available Census data at the Census Tract level.
 
-```{r}
+```{r, layout="l-body-outset"}
 dat %>%
   filter(layer == "three") %>%
   select(title, steward) %>%
@@ -56,11 +56,11 @@ dat %>%
   cols_width(everything() ~ pct(50))
 ```
 
-# Emergency Financial Support
+## Emergency Financial Support
 
 Developing an understanding, where data is available, of the emergency financial support resources received which may be masking short-term consequences and delaying second-order impacts of the pandemic at the county level.
 
-```{r}
+```{r, layout="l-body-outset"}
 dat %>%
   filter(layer == "two") %>%
   select(title, steward) %>%
@@ -75,11 +75,11 @@ dat %>%
   cols_width(everything() ~ pct(50))
 ```
 
-# Real-Time Fluctuations
+## Real-Time Fluctuations
 
 Developing an understanding of real-time fluctuations in a selection of publicly available indicators at the county level.
 
-```{r}
+```{r, layout="l-body-outset"}
 dat %>%
   filter(layer == "one") %>%
   select(title, steward) %>%
@@ -94,6 +94,6 @@ dat %>%
   cols_width(everything() ~ pct(50))
 ```
 
-# Aggregate Composites
+## Aggregate Composites
 
 \<\<Insert composite visuals and explanations\>\>
