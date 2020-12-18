@@ -4,13 +4,17 @@
 
 # Quick Links
 
--   [Information to Action Framework]()
+-   Information to Action Framework
 
--   [Data Visualizations](<https://github.com/ncIMPACT/covid-keys-impact/tree/main/plots>)
+-   [Data Visualization Source Files](https://github.com/ncIMPACT/covid-keys-impact/tree/main/plots)
 
--   [Composite Data](<https://github.com/ncIMPACT/covid-keys-impact/tree/main/data>)
+-   Data Visualization Previews
 
--   [Data Documentation]()
+-   COVID Composite Data Files
+
+-   COVID Composite Data Documentation
+
+-   COVID Composite Web Application (Preview DRAFT)
 
 # Background
 
@@ -24,9 +28,13 @@ If we are being completely honest with ourselves, we know that the true effectiv
 
 Given all of this, you can see how difficult it might be to provide reasonable and relevant data-informed decision making support for jurisdictions across the state. In the face of so much uncertainty though, what we have noticed is a consistent framework for moving from information to action being almost unconsciously discussed and employed by local leaders.
 
-This framework involves a nuanced and layered approach that considers community resilience, the infusion of emergency financial support, and real-time fluctuations in a focused set of metrics. What we have compiled for you here, is a non-comprehensive selection of indicators that we see as tremendously relevant to the recovery landscape for communities in North Carolina. The indicators are not just intended to be informative but rather are constructed with this framework in mind for how communities in North Carolina might think about making tough decisions over the next six to twelve months to prioritize limited resources.
+# Indicators
 
-Our approach combines publicly available data to construct a composite understanding of where economic growth and recovery may be most challenging and where communities may be at the greatest risk of the disproportionate impact of COVID-19 and widening inequities. This composite approach is also intended to be representative of the complex operating context for local government and the intricate social fabric in communities that makes it almost impossible to adopt a one-size-fits-all understanding.
+This framework involves a nuanced and layered approach which includes quantitative insights that consider community resilience, the infusion of emergency financial support, and real-time fluctuations in a focused set of metrics.
+
+What we have compiled for you here, is a non-comprehensive selection of indicators that we see as tremendously relevant to the recovery landscape for communities in North Carolina. The indicators are not just intended to be informative but rather are constructed with this framework in mind for how communities in North Carolina might think about making tough decisions over the next six to twelve months to prioritize limited resources.
+
+Our COVID Composite combines publicly available data to construct a composite understanding of where economic growth and recovery may be most challenging and where communities may be at the greatest risk of the disproportionate impact of COVID-19 and widening inequities. This composite approach is also intended to be representative of the complex operating context for local government and the intricate social fabric in communities that makes it almost impossible to adopt a one-size-fits-all understanding.
 
 In accordance with the framework described, our composite is constructed in three layers:
 
