@@ -1,15 +1,15 @@
 name: "docs"
-title: "Information to Action"
+title: "COVID Composite Documentation"
 description: |
-  IFA Framework Documentation
+  COVID Composite Tool Documentation
 output_dir: "."
 theme: theme.css
 navbar:
   right:
-    - text: "Overview"
+    - text: "Metric Documentation"
       href: info-to-action.html
-    - text: "About"
-      href: about.html
+    - text: "Standardizing Metrics"
+      href: standardize.html
     - icon: fab fa-github fa-2x
       href: https://github.com/ncIMPACT/covid-keys-impact
 output: distill::distill_article

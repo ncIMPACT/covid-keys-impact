@@ -1,0 +1,81 @@
+---
+title: "Standardizing Metrics"
+description: |
+  Data-informed decision making in the face of crisis.
+author:
+  - name: Jason Jones
+    url: https://www.sog.unc.edu/about/faculty-and-staff/jason-jones
+    affiliation: ncIMPACT Initiative
+    affiliation_url: https://ncimpact.sog.unc.edu/
+date: "`r Sys.Date()`"
+output: 
+  distill::distill_article:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Z-Scores
+
+To not reinvent the wheel, below is a simple explanation of what a z-score is from the [Investopedia website](https://www.investopedia.com/terms/z/zscore.asp):
+
+> "A Z-score is a numerical measurement that describes a value's relationship to the mean of a group of values. Z-score is measured in terms of [standard deviations](https://www.investopedia.com/terms/s/standarddeviation.asp) from the mean. If a Z-score is 0, it indicates that the data point's score is identical to the mean score. A Z-score of 1.0 would indicate a value that is one standard deviation from the mean. Z-scores may be positive or negative, with a positive value indicating the score is above the mean and a negative score indicating it is below the mean."[^1]
+
+[^1]: <https://www.investopedia.com/terms/z/zscore.asp>
+
+# Standardized Indicators
+
+The composite layers and the composite in entirety, is about thinking through where the greatest chance for disproportionately negative impact might be. All composite z-scores are standardized so that a higher z-score equates to whatever direction we would consider, in the context of COVID-19, to be an indication of potential for disproportionate negative impact.
+
+For a concrete example of this, the percent with health insurance coverage metric would normally result in a negative z-score to correspond with what would be considered negative. This is because z-score is just a measure of how many standard deviations away from the mean a value is. For census tracts with a low percentage of people having health insurance coverage, the z-score might be something like -2.5. To make everything easy to interpret here, that has been changed to 2.5 so that a higher z-score always indicates what we would consider not good in our composite.
+
+So with that laid out, our composite metric assumptions for potentially disproportionate negative impact are:
+
+## Community Resilience
+
+1.  Unemployment Rate**: higher**
+
+2.  Poverty Rate**: higher**
+
+3.  School Age Children Percent of Population**: higher**
+
+4.  Percent of Population with Broadband Access**: lower**
+
+5.  Percent of Population with Health Insurance Coverage**: lower**
+
+6.  Percent of Population White Alone**: lower**
+
+7.  Dependency Ratio**: higher**
+
+## Emergency Financial Support
+
+1.  NC CRF County Per Capita Distributions**: higher**
+
+2.  NC CRF Hospital Per Capita Distributions**: higher**
+
+3.  HHS Uninsured Relief Fund Per Capita Distributions**: higher**
+
+4.  HHS Rural Health Clinic Testing Fund Per Capita Distributions**: higher**
+
+5.  HHS Provider Relief Fund Per Capita Distributions**: higher**
+
+6.  HHS COVID-19 Awards Per Capita Distributions**: higher**
+
+7.  Paycheck Protection Program Per Capita Distributions**: higher**
+
+## Real-Time Fluctuations
+
+1.  Percent Change in Three Bedroom Home Values**: higher**
+
+2.  Percent Change in Unemployment Rate**: higher**
+
+3.  Percent Change in Taxable Sales**: higher**
+
+4.  Percent Change in Sales Tax Distributable Proceeds**: higher**
+
+5.  COVID-19 Cases Per 10,000 Residents**: higher**
+
+6.  Unemployment Insurance Claimants Per 1,000 Residents**: higher**

@@ -1,12 +1,12 @@
 ---
-title: "Information to Action Framework"
+title: "COVID-19 Composite Tool"
 description: |
   Data-informed decision making in the face of crisis.
 site: distill::distill_website
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, include = FALSE, warning = FALSE, message = FALSE)
 
 # Learn more about creating websites with Distill at:
 # https://rstudio.github.io/distill/website.html
@@ -16,3 +16,98 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
+# Welcome!
+
+Welcome to our primary documentation site for our COVID Composite tool. Here you will find, hopefully, everything you should need to make sense of our COVID Composite tool and the associated metrics.
+
+We also hope that those of you that are more technical will find that this open-source distribution will allow you to jump right in and play around.
+
+# Project License
+
+Software licensed under the [GNU General Public License v3.0](https://github.com/ncIMPACT/covid-keys-impact/blob/main/LICENSE)
+
+# Information to Action Framework
+
+If you are interested in integrating this tool into our broader Information to Action Framework, please check out [our blog post here](https://ncimpact.sog.unc.edu/)!
+
+# Composite Metrics & Visualizations
+
+## Community Resilience
+
+1.  [Unemployment Rate](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-unemp.png)
+
+2.  [Poverty Rate](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-poverty.png)
+
+3.  [School Age Children Percent of Population](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-school-age.png)
+
+4.  [Percent of Population with Broadband Access](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-broadband.png)
+
+5.  [Percent of Population with Health Insurance Coverage](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-health.png)
+
+6.  [Percent of Population White Alone](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-white.png)
+
+7.  [Dependency Ratio](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/acs-depend.png)
+
+## Emergency Financial Support
+
+1.  [NC CRF County Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/counties-crf.png)
+
+2.  [NC CRF Hospital Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/hospitals-crf.png)
+
+3.  [HHS Uninsured Relief Fund Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/hhs-uninsured-relief.png)
+
+4.  [HHS Rural Health Clinic Testing Fund Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/rhc-testing.png)
+
+5.  [HHS Provider Relief Fund Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/prov-relief.png)
+
+6.  [HHS COVID-19 Awards Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/hhs-awards.png)
+
+7.  [Paycheck Protection Program Per Capita Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/nc-ppp.png)
+
+## Real-Time Fluctuations
+
+1.  [Percent Change in Three Bedroom Home Values](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/zhvi-change.png)
+
+2.  [Percent Change in Unemployment Rate](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/unemp-change.png)
+
+3.  [Percent Change in Taxable Sales](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/taxable-sales.png)
+
+4.  [Percent Change in Sales Tax Distributable Proceeds](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/tax-distributions.png)
+
+5.  [COVID-19 Cases Per 10,000 Residents](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/covid-cases.png)
+
+6.  [Unemployment Insurance Claimants Per 1,000 Residents](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/ui-claims.png)
+
+## Aggregate Composite Layers
+
+1.  [Community Resilience Composite](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/prior-position-composite.png)
+
+2.  [Emergency Financial Support Composite](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/fin-support-composite.png)
+
+3.  [Real-Time Fluctuations Composite](https://github.com/ncIMPACT/covid-keys-impact/blob/main/plots/real-time-composite.png)
+
+# Available Data Files
+
+-   [Continued Unemployment Insurance Claims](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/continued-ui-claims.csv)
+
+-   [Initial Unemployment Insurance Claims](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/initial-ui-claims.csv)
+
+-   [HHS COVID-19 Awards](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/covid-19-award-details.csv)
+
+-   [CRF Hospital Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/nc_crf_hospital_allocations.csv)
+
+-   [CRF County Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/nc-crf-county-allocations.csv)
+
+-   [Paycheck Protection Program Loans](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/nc-ppp.csv)
+
+-   [HHS Provider Relief Fund Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/provider-relief-fund.csv)
+
+-   [HHS Rural Health Clinic Testing Fund Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/rhc-testing-fund.csv)
+
+-   [FRED Unemployment Data - Bureau of Labor Statistics](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/unemployment-rate.csv)
+
+-   [HHS Uninsured Relief Fund Distributions](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/uninsured-relief-fund.csv)
+
+-   [Zillow Three Bedroom Home Values](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/zhvi-three-bedroom.csv)
+
+-   [Hospitals](https://github.com/ncIMPACT/covid-keys-impact/blob/main/data/hospitals.csv)

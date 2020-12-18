@@ -4,17 +4,19 @@
 
 # Quick Links
 
--   Information to Action Framework
+-   [Information to Action Framework](https://ncimpact.sog.unc.edu/) (Blog post link TBD)
+
+-   [COVID Composite Documentation Site](https://ncimpact.github.io/covid-keys-impact/)
 
 -   [Data Visualization Source Files](https://github.com/ncIMPACT/covid-keys-impact/tree/main/plots)
 
 -   Data Visualization Previews
 
--   COVID Composite Data Files
+-   [COVID Composite Source Data Files](https://github.com/ncIMPACT/covid-keys-impact/tree/main/data)
 
--   COVID Composite Data Documentation
+-   [COVID Composite Data Documentation](https://ncimpact.github.io/covid-keys-impact/info-to-action.html)
 
--   COVID Composite Web Application (Preview DRAFT)
+-   [COVID Composite Web Application](https://ncimpact.shinyapps.io/covid-composite/) (Preview DRAFT)
 
 # Background
 
