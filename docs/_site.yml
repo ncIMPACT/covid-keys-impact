@@ -8,8 +8,14 @@ navbar:
   right:
     - text: "Metric Documentation"
       href: info-to-action.html
-    - text: "Standardizing Metrics"
+    - text: "Metric Standardization"
       href: standardize.html
+    - text: "Layer Aggregates"
+      href: aggregate.html
     - icon: fab fa-github fa-2x
       href: https://github.com/ncIMPACT/covid-keys-impact
-output: distill::distill_article
+  search: true
+output: 
+  distill::distill_article:
+    includes:
+      in_header: header.html

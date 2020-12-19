@@ -18,17 +18,19 @@ knitr::opts_chunk$set(echo = FALSE, include = FALSE, warning = FALSE, message = 
 
 # Welcome!
 
+![](images/black-logo-long.png){width="50%"}
+
 Welcome to our primary documentation site for our COVID Composite tool. Here you will find, hopefully, everything you should need to make sense of our COVID Composite tool and the associated metrics.
 
 We also hope that those of you that are more technical will find that this open-source distribution will allow you to jump right in and play around.
 
 ## Project License
 
-Software licensed under the [GNU General Public License v3.0](https://github.com/ncIMPACT/covid-keys-impact/blob/main/LICENSE)
+Software licensed under the [GNU General Public License v3.0](https://github.com/ncIMPACT/covid-keys-impact/blob/main/LICENSE){target="'_blank'"}
 
 ## Information to Action Framework
 
-If you are interested in integrating this tool into our broader Information to Action Framework, please check out [our blog post here](https://ncimpact.sog.unc.edu/)!
+If you are interested in integrating this tool into our broader Information to Action Framework, please check out [our blog post here](https://ncimpact.sog.unc.edu/){target="'_blank'"}!
 
 ## Composite Metrics & Visualizations
 

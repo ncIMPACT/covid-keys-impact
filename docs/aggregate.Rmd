@@ -1,0 +1,37 @@
+---
+title: "Composite Layer Aggregate Scores"
+description: |
+  Data-informed decision making in the face of crisis.
+author:
+  - name: Jason Jones
+    url: https://www.sog.unc.edu/about/faculty-and-staff/jason-jones
+    affiliation: ncIMPACT Initiative
+    affiliation_url: https://ncimpact.sog.unc.edu/
+date: "`r Sys.Date()`"
+output: 
+  distill::distill_article:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Computing Scores
+
+Once individual metric z-scores are all computed, the metrics can then be aggregated into a composite layer total z-score. Displayed here are maps showing, at the county and Census Tract levels, the aggregate z-scores for the three separate composite layers.
+
+For additional reference information and guidance on z-scores, please refer to our [Metric Standardization documentation.](https://ncimpact.github.io/covid-keys-impact/standardize.html)
+
+### Emergency Financial Support
+
+![](https://raw.githubusercontent.com/ncIMPACT/covid-keys-impact/main/plots/fin-support-composite.png){width="100%"}
+
+### Community Resiliency
+
+![](https://raw.githubusercontent.com/ncIMPACT/covid-keys-impact/main/plots/prior-position-composite.png){width="100%"}
+
+### Real-Time Fluctuations
+
+![](https://raw.githubusercontent.com/ncIMPACT/covid-keys-impact/main/plots/real-time-composite.png){width="100%"}

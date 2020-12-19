@@ -93,7 +93,3 @@ dat %>%
             locations = cells_body(columns = vars(steward))) %>%
   cols_width(everything() ~ pct(50))
 ```
-
-## Aggregate Composites
-
-\<\<Insert composite visuals and explanations\>\>

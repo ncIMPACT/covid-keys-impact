@@ -10,8 +10,6 @@
 
 -   [Data Visualization Source Files](https://github.com/ncIMPACT/covid-keys-impact/tree/main/plots)
 
--   Data Visualization Previews
-
 -   [COVID Composite Source Data Files](https://github.com/ncIMPACT/covid-keys-impact/tree/main/data)
 
 -   [COVID Composite Data Documentation](https://ncimpact.github.io/covid-keys-impact/info-to-action.html)
