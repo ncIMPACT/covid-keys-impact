@@ -34,8 +34,8 @@ valueBoxServer <- function(input, output, session, dat, starts, county, subtitle
     bs4ValueBox(
       value = h1(value_dat),
       subtitle = subtitle,
-      status = status,
-      icon = main_icon,
+      color = status,
+      icon = icon(main_icon),
       footer = h4("Per Capita: ", per_capita)
     )
     

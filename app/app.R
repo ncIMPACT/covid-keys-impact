@@ -6,12 +6,16 @@ library(tidyverse)
 library(scales)
 library(glue)
 library(echarts4r)
+library(leaflet)
+library(htmltools)
+library(sf)
 
 # Load modules
 source("modules/get-data.R")
 source("modules/valueBoxModule.R")
 source("modules/layerTwoValueBoxModule.R")
 source("modules/echartsModule.R")
+source("modules/leafletModule.R")
 
 # Create recyclable icon function
 info_title <- function(link = NULL, title = NULL) {
@@ -22,38 +26,47 @@ info_title <- function(link = NULL, title = NULL) {
 
 
 ui <- bs4DashPage(
-  navbar = bs4DashNavbar(compact = TRUE,
+  header = bs4DashNavbar(compact = TRUE,
                          selectInput(inputId = "county", selectize = FALSE,
                                      choices = counties$NAMELSAD, label = NULL)),
   sidebar = bs4DashSidebar(
     bs4SidebarMenu(
+      id = "selected",
       bs4SidebarHeader(title = "Composite Layers"),
-      bs4SidebarMenuItem(text = "Community Resiliency",
+      bs4SidebarMenuItem(text = "Community Resilience",
                          tabName = "prior",
-                         icon = "users"),
+                         icon = icon("users")),
       bs4SidebarMenuItem(text = "Financial Support",
                          tabName = "fin-dash",
-                         icon = "hand-holding-usd"),
+                         icon = icon("hand-holding-usd")),
       bs4SidebarMenuItem(text = "Real-Time Metrics",
                          tabName = "real-time",
-                         icon = "calendar-alt")
+                         icon = icon("calendar-alt")),
+      bs4SidebarHeader(title = "Composite Map"),
+      bs4SidebarMenuItem(text = "Map",
+                         tabName = "map",
+                         icon = icon("map"))
     )
   ),
   body = bs4DashBody(
     tags$style(HTML("body > div > nav > div{display: contents;}")),
-    tags$script('window.onresize = function() {
-            $(".echarts4r").each(function(){
-                var id = $(this).attr("_echarts_instance_");
-                window.echarts.getInstanceById(id).resize();
-            });
-        };'),
     bs4TabItems(
       bs4TabItem(
         tabName = "prior",
+        fluidRow(tags$div(class = "mx-auto", selectInput(inputId = "showme", label = "Show me:",
+                                                         choices = c("Total" = 2, "Percent" = 3, "Z-Score" = 4),
+                                                         selectize = TRUE))),
         fluidRow(
-          bs4Sortable(width = 4,
-                      bs4Card(echartUI("chart1"), width = 12, closable = FALSE, title = HTML(info_title(title = "ACS Unemployment Rate",
-                                                                                                        link = "https://ncimpact.sog.unc.edu/"))))
+          column(width = 6, echartUI("chart1")),
+          column(width = 6, echartUI("chart2"))
+        ),
+        fluidRow(
+          column(width = 6, echartUI("chart3")),
+          column(width = 6, echartUI("chart4"))
+        ),
+        fluidRow(
+          column(width = 6, echartUI("chart5")),
+          column(width = 6, echartUI("chart6"))
         )
       ),
       bs4TabItem(
@@ -85,6 +98,12 @@ ui <- bs4DashPage(
                       bs4Card(valueBoxTwoUI("vbox12"), width = 12, closable = FALSE, title = "Unemployment Insurance Claims Per 1,000 Residents"),
                       bs4Card(valueBoxTwoUI("vbox13"), width = 12, closable = FALSE, title = "Taxable Sales Percent Change"))
         )
+      ),
+      bs4TabItem(
+        tabName = "map",
+        fluidRow(
+          leafletMapUI("compositeMap")
+        )
       )
     )
   ),
@@ -95,6 +114,7 @@ ui <- bs4DashPage(
 server <- function(input, output, session) {
   
   input_county <- reactive({ input$county })
+  input_var <- reactive({ input$showme })
   
   ########## LAYER ONE VALUE BOX MODULE CALLS #################################
   callModule(valueBoxServer, "vbox1", dat = layer_one, starts = "hhs_uninsured",
@@ -138,8 +158,29 @@ server <- function(input, output, session) {
              subtitle = "Taxable Sales Change Z-Score", county = input_county, footer = "% Change")
   
   ######################## LAYER THREE VALUE BOX MODULE CALLS ##################
-  callModule(echartServer, "chart1", dat = layer_three, county = input_county,
-             starts = "acs_unemp", subtitle = "ACS Unemployment Z-Score")
+    callModule(echartServer, "chart1", dat = layer_three, county = input_county,
+             starts = "acs_unemp", subtitle = "ACS Unemployment", show = input_var)
+  
+  callModule(echartServer, "chart2", dat = layer_three, county = input_county,
+             starts = "acs_pov", subtitle = "ACS Poverty Rate", show = input_var)
+  
+  callModule(echartServer, "chart3", dat = layer_three, county = input_county,
+             starts = "school", subtitle = "ACS School Age Children", show = input_var)
+  
+  callModule(echartServer, "chart4", dat = layer_three, county = input_county,
+             starts = "broadband", subtitle = "ACS Broadband Access", show = input_var)
+  
+  callModule(echartServer, "chart5", dat = layer_three, county = input_county,
+             starts = "health", subtitle = "ACS Health Insurance", show = input_var)
+  
+  callModule(echartServer, "chart6", dat = layer_three, county = input_county,
+             starts = "white_alone", subtitle = "ACS White Alone", show = input_var)
+  
+  ######################## COMPOSITE MAP #######################################
+  mapUpdate <- reactive({ input$selected })
+  
+  callModule(leafletMapServer, "compositeMap", map_dat = composite_dat, county = input_county,
+             tab = mapUpdate)
   
 }
 
