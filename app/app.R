@@ -28,7 +28,8 @@ info_title <- function(link = NULL, title = NULL) {
 ui <- bs4DashPage(
   header = bs4DashNavbar(compact = TRUE,
                          selectInput(inputId = "county", selectize = FALSE,
-                                     choices = counties$NAMELSAD, label = NULL)),
+                                     choices = counties$NAMELSAD, label = NULL),
+                         textOutput("test")),
   sidebar = bs4DashSidebar(
     bs4SidebarMenu(
       id = "selected",
@@ -67,6 +68,9 @@ ui <- bs4DashPage(
         fluidRow(
           column(width = 6, echartUI("chart5")),
           column(width = 6, echartUI("chart6"))
+        ),
+        fluidRow(
+          column(width = 6, echartUI("chart7"))
         )
       ),
       bs4TabItem(
@@ -101,6 +105,9 @@ ui <- bs4DashPage(
       ),
       bs4TabItem(
         tabName = "map",
+        fluidRow(tags$div(class = "mx-auto", selectInput(inputId = "build", label = "Show me:",
+                                                         choices = composite_build_selections,
+                                                         selectize = TRUE, multiple = TRUE, selected = "acs_unemp"))),
         fluidRow(
           leafletMapUI("compositeMap")
         )
@@ -176,11 +183,15 @@ server <- function(input, output, session) {
   callModule(echartServer, "chart6", dat = layer_three, county = input_county,
              starts = "white_alone", subtitle = "ACS White Alone", show = input_var)
   
+  callModule(echartServer, "chart7", dat = layer_three, county = input_county,
+             starts = "depend", subtitle = "Dependency Ratio", show = input_var)
+  
   ######################## COMPOSITE MAP #######################################
   mapUpdate <- reactive({ input$selected })
+  built <- reactive({ input$build })
   
-  callModule(leafletMapServer, "compositeMap", map_dat = composite_dat, county = input_county,
-             tab = mapUpdate)
+  callModule(leafletMapServer, "compositeMap", map_dat = composite_dat, 
+             county = input_county, tab = mapUpdate, build = built)
   
 }
 

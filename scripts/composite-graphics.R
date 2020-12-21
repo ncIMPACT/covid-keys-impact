@@ -80,8 +80,8 @@ p1 <- final %>%
   geom_sf(aes(fill = natural_breaks), color = "#151515", size = 0.01) +
   scale_fill_manual(values = rev(blue_pal), labels = legend_labels,
                     guide = guide_legend(title = NULL, nrow = 1)) +
-  labs(title = "Prior Position Composite",
-       subtitle = "Total z-score by Census Tract for 7 prior position composite metrics. The z-score is a measure of distance from the average for all census tracts.<br>Metric z-scores have all been standardized so that a <b style='color: #ca5800;'>high z-score</b> is not preferred. This composite includes Census data capturing unemployment,<br>poverty, school age children, broadband access, health insurance coverage, and racial diversity.",
+  labs(title = "Community Resilience Composite",
+       subtitle = "Total z-score by Census Tract for 7 community resilience composite metrics. The z-score is a measure of distance from the average for all census tracts.<br>Metric z-scores have all been standardized so that a <b style='color: #ca5800;'>high z-score</b> is not preferred. This composite includes Census data capturing unemployment,<br>poverty, school age children, broadband access, health insurance coverage, and racial diversity.",
        caption = "<b>Source:</b> UNC School of Government, ncIMPACT Initiative") +
   map_theme
 
