@@ -5,8 +5,8 @@ account: ncimpact
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3390180
-bundleId: 4010109
+bundleId: 4016847
 url: https://ncimpact.shinyapps.io/covid-composite/
-when: 1608413694.70349
+when: 1608591086.86187
 asMultiple: FALSE
 asStatic: FALSE

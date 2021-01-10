@@ -9,6 +9,8 @@ library(echarts4r)
 library(leaflet)
 library(htmltools)
 library(sf)
+# library(shinyWidgets)
+# library(shinycssloaders)
 
 # Load modules
 source("modules/get-data.R")
@@ -16,6 +18,7 @@ source("modules/valueBoxModule.R")
 source("modules/layerTwoValueBoxModule.R")
 source("modules/echartsModule.R")
 source("modules/leafletModule.R")
+source("modules/primDashModule.R")
 
 # Create recyclable icon function
 info_title <- function(link = NULL, title = NULL) {
@@ -33,6 +36,10 @@ ui <- bs4DashPage(
   sidebar = bs4DashSidebar(
     bs4SidebarMenu(
       id = "selected",
+      bs4SidebarHeader(title = "Explore the Metrics"),
+      bs4SidebarMenuItem(text = "Metric Dashboard",
+                         tabName = "metricDash",
+                         icon = icon("chart-bar")),
       bs4SidebarHeader(title = "Composite Layers"),
       bs4SidebarMenuItem(text = "Community Resilience",
                          tabName = "prior",
@@ -52,6 +59,21 @@ ui <- bs4DashPage(
   body = bs4DashBody(
     tags$style(HTML("body > div > nav > div{display: contents;}")),
     bs4TabItems(
+      bs4TabItem(
+        tabName = "metricDash",
+        fluidRow(
+          column(width = 3,
+                 fluidRow(tags$h2("Explore the Metrics")),
+                 fluidRow(tags$p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")),
+                 fluidRow(tags$p(tags$a(href = 'https://ncimpact.github.io/covid-keys-impact/', target = '_blank', "About this dashboard"))),
+                 fluidRow(tags$h3("Primary Data Layer"),
+                          selectInput(inputId = "primaryLayer", label = NULL, choices = dashboard_composite_selections,
+                                      selectize = FALSE, width = "100%"))),
+          column(width = 1),
+          column(width = 8,
+                 primDashUI("primDash"))
+        )
+      ),
       bs4TabItem(
         tabName = "prior",
         fluidRow(tags$div(class = "mx-auto", selectInput(inputId = "showme", label = "Show me:",
@@ -105,14 +127,12 @@ ui <- bs4DashPage(
       ),
       bs4TabItem(
         tabName = "map",
-        fluidRow(tags$div(class = "mx-auto", selectInput(inputId = "build", label = "Show me:",
-                                                         choices = composite_build_selections,
-                                                         selectize = TRUE, multiple = TRUE, selected = "acs_unemp"))),
-        fluidRow(
-          leafletMapUI("compositeMap")
+        fluidRow(tags$div(class = "mx-auto", selectInput(inputId = "build", label = "Build Your Own Composite:",
+                                                                    choices = composite_build_selections,
+                                                                    selectize = TRUE, multiple = TRUE, selected = "acs_unemp"))),
+        fluidRow(leafletMapUI("compositeMap"))
         )
       )
-    )
   ),
   footer = bs4DashFooter(),
   title = "COVID Composite"
@@ -192,6 +212,12 @@ server <- function(input, output, session) {
   
   callModule(leafletMapServer, "compositeMap", map_dat = composite_dat, 
              county = input_county, tab = mapUpdate, build = built)
+  
+  ######################### PRIMARY DASH MODULE ################################
+  selection <- reactive({ input$primaryLayer })
+  
+  callModule(primDashServer, "primDash", counties = nc_counties, dat = composite_dat,
+             selection = selection, county = input_county, tab = mapUpdate)
   
 }
 
