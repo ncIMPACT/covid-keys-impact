@@ -38,9 +38,15 @@ primDashServer <- function(input, output, session, counties, dat, selection, cou
     
     pal <- colorBin(palette = "BuPu", domain = new_map_dat$variable, bins = 6, pretty = FALSE)
     
-    map_bounds <- st_bbox(filter(new_map_dat, county_full_name == county()))
+    final_map_dat <- filter(new_map_dat, county_full_name == county())
     
-    leafletProxy(mapId = "map", data = filter(new_map_dat, county_full_name == county())) %>%
+    labs <- glue("<p style='margin: 0; padding: 0; line-height: 15px; font-size: 10px;'><b>{final_map_dat$tract_name}</b></p>
+                 <p style='margin: 0; padding: 0; line-height: 20px; font-size: 14px;'>{round(final_map_dat$variable,2)}</p>
+                 <p style='margin: 0; padding: 0; line-height: 15px; font-size: 12px;'><b>{selection()}</b></p>")
+    
+    map_bounds <- st_bbox(final_map_dat)
+    
+    leafletProxy(mapId = "map", data = final_map_dat) %>%
       clearShapes() %>%
       clearControls() %>%
       flyToBounds(lng1 = as.numeric(map_bounds$xmin), lat1 = as.numeric(map_bounds$ymin),
@@ -48,7 +54,8 @@ primDashServer <- function(input, output, session, counties, dat, selection, cou
       addPolygons(weight = 1, color = "#151515", fillColor = ~pal(variable),
                   fillOpacity = 0.8, highlightOptions = highlightOptions(color = "#FFFFFF",
                                                                          weight = 2,
-                                                                         bringToFront = TRUE)) %>%
+                                                                         bringToFront = TRUE),
+                  label = ~map(labs, HTML)) %>%
       addPolygons(data = selected_county, weight = 3, color = "#ec008b", opacity = 1, fill = FALSE)
     
   })

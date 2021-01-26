@@ -38,15 +38,15 @@ valueBoxTwoServer <- function(input, output, session, dat, starts, county, subti
       pull(1) %>%
       fix_dat(ends = ends)
     
-    status <- ifelse(value_dat <= 0, "success", "warning")
+    status <- ifelse(value_dat <= 0, "success", "purple")
     main_icon <- ifelse(value_dat <= 0, "arrow-down", "arrow-up")
     
     bs4ValueBox(
-      value = h1(value_dat),
-      subtitle = subtitle,
+      value = h1(total_value_dat),
+      subtitle = footer,
       color = status,
       icon = icon(main_icon),
-      footer = h4(footer, " :", total_value_dat)
+      footer = h4("Z-Score: ", value_dat)
     )
     
   })

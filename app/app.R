@@ -9,8 +9,6 @@ library(echarts4r)
 library(leaflet)
 library(htmltools)
 library(sf)
-# library(shinyWidgets)
-# library(shinycssloaders)
 
 # Load modules
 source("modules/get-data.R")
@@ -64,7 +62,8 @@ ui <- bs4DashPage(
         fluidRow(
           column(width = 3,
                  fluidRow(tags$h2("Explore the Metrics")),
-                 fluidRow(tags$p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")),
+                 fluidRow(tags$p("Welcome to the ncIMPACT COVID Composite Dashboard. Please use this landing page as an opportunity to explore our composite metrics for your county. Community Resilience metrics are available at the Census tract level and all other metrics are available at the county level."),
+                          tags$p("You can then dive deeper using the sidebar menu to look at each layer in detail in its entirety or you can use the Composite Map feature to pick and choose your own metrics to build your own composite. In the Composite Map, data is aggregated and displayed for your selected county and all adjacent counties to provide you with greater context.")),
                  fluidRow(tags$p(tags$a(href = 'https://ncimpact.github.io/covid-keys-impact/', target = '_blank', "About this dashboard"))),
                  fluidRow(tags$h3("Primary Data Layer"),
                           selectInput(inputId = "primaryLayer", label = NULL, choices = dashboard_composite_selections,
@@ -99,8 +98,7 @@ ui <- bs4DashPage(
         tabName = "fin-dash",
         fluidRow(
           bs4Sortable(width = 4,
-                      bs4Card(valueBoxUI("vbox1"), width = 12, closable = FALSE, title = HTML(info_title(title = "Uninsured Relief Fund",
-                                                                                                         link = 'https://ncimpact.sog.unc.edu/'))),
+                      bs4Card(valueBoxUI("vbox1"), width = 12, closable = FALSE, title = "Uninsured Relief Fund"),
                       bs4Card(valueBoxUI("vbox2"), width = 12, closable = FALSE, title = "Paycheck Protection Program (PPP)")),
           bs4Sortable(width = 4,
                       bs4Card(valueBoxUI("vbox4"), width = 12, closable = FALSE, title = "NC CRF Hospital Distributions"),

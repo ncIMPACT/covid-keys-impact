@@ -49,7 +49,7 @@ leafletMapServer <- function(input, output, session, map_dat, county, tab, build
       group_by(tract_geoid) %>%
       summarise(selected_score = sum(score)) %>%
       left_join(map_dat) %>%
-      mutate(status = ifelse(selected_score <= 0, "#28a745", "#ffc107")) %>%
+      mutate(status = ifelse(selected_score <= 0, "#28a745", "#6f42c1")) %>%
       st_as_sf()
     
     map_bounds <- st_bbox(new_map_dat)

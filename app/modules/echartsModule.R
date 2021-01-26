@@ -23,8 +23,8 @@ echartServer <- function(input, output, session, dat, starts, county, subtitle =
       pull(1) %>%
       mean(na.rm = T)
     
-    status <- ifelse(value_dat <= 0, "#28a745", "#ffc107")
-    text_color <- ifelse(value_dat <= 0, "white", "black")
+    status <- ifelse(value_dat <= 0, "#28a745", "#6f42c1")
+    text_color <- ifelse(value_dat <= 0, "white", "white")
     main_icon <- ifelse(value_dat <= 0, "arrow-down", "arrow-up")
     
     tags$div(style=glue("background-color:{status}; color:{text_color};"),
@@ -50,7 +50,7 @@ echartServer <- function(input, output, session, dat, starts, county, subtitle =
         pull(1) %>%
         mean(na.rm = T)
       
-      status <- ifelse(value_dat <= 0, "#28a745", "#ffc107")
+      status <- ifelse(value_dat <= 0, "#28a745", "#6f42c1")
       
       style <- ifelse(selected_column == 2, "percent", "decimal")
       digits <- ifelse(selected_column == 3, 2, 0)
@@ -78,7 +78,7 @@ echartServer <- function(input, output, session, dat, starts, county, subtitle =
         pull(1) %>%
         mean(na.rm = T)
       
-      status <- ifelse(value_dat <= 0, "#28a745", "#ffc107")
+      status <- ifelse(value_dat <= 0, "#28a745", "#6f42c1")
       
       style <- ifelse(as.integer(show()) == 3, "percent", "decimal")
       digits <- ifelse(as.integer(show()) == 4, 2, 0)

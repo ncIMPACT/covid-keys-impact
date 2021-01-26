@@ -26,17 +26,17 @@ valueBoxServer <- function(input, output, session, dat, starts, county, subtitle
       pull(1) %>%
       dollar()
     
-    status <- ifelse(value_dat <= 0, "success", "warning")
+    status <- ifelse(value_dat <= 0, "success", "purple")
     main_icon <- ifelse(value_dat <= 0, "arrow-down", "arrow-up")
     
     footer = glue()
     
     bs4ValueBox(
-      value = h1(value_dat),
-      subtitle = subtitle,
+      value = h1(per_capita),
+      subtitle = "Per Capita",
       color = status,
       icon = icon(main_icon),
-      footer = h4("Per Capita: ", per_capita)
+      footer = h4("Z-Score: ", value_dat)
     )
     
   })
