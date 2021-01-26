@@ -4,7 +4,7 @@
 
 # Quick Links
 
--   [Information to Action Framework](https://ncimpact.sog.unc.edu/) (Blog post link TBD)
+-   [Information to Action Framework](https://ncimpact.sog.unc.edu/2020/12/unwrapping-the-information-to-action-framework/)
 
 -   [COVID Composite Documentation Site](https://ncimpact.github.io/covid-keys-impact/)
 
